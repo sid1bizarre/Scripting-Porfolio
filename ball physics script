@@ -1,0 +1,37 @@
+local ball = script.Parent
+local userInputService = game:GetService("User InputService")
+local bodyVelocity = Instance.new("BodyVelocity")
+
+-- Set up the BodyVelocity
+bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+bodyVelocity.MaxForce = Vector3.new(4000, 4000, 4000) -- Adjust as needed
+bodyVelocity.Parent = ball
+
+local function onInput(input, gameProcessedEvent)
+    if gameProcessedEvent then return end
+
+    local direction = Vector3.new(0, 0, 0)
+
+    if input.UserInputType == Enum.UserInputType.Keyboard then
+        if input.KeyCode == Enum.KeyCode.W then
+            direction = direction + Vector3.new(0, 0, -1) -- Move forward
+        elseif input.KeyCode == Enum.KeyCode.S then
+            direction = direction + Vector3.new(0, 0, 1) -- Move backward
+        elseif input.KeyCode == Enum.KeyCode.A then
+            direction = direction + Vector3.new(-1, 0, 0) -- Move left
+        elseif input.KeyCode == Enum.KeyCode.D then
+            direction = direction + Vector3.new(1, 0, 0) -- Move right
+        end
+    end
+
+    -- Apply force to the ball
+    if direction.Magnitude > 0 then
+        direction = direction.Unit * 50 -- Adjust speed
+        bodyVelocity.Velocity = direction
+    else
+        bodyVelocity.Velocity = Vector3.new(0, 0, 0) -- Stop the ball if no input
+    end
+end
+
+-- Connect the input event
+userInputService.InputBegan:Connect(onInput)
